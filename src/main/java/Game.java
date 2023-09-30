@@ -57,6 +57,13 @@ public class Game {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (key.getKeyType() == KeyType.EOF) {
+            try {
+                screen.close(); // Close the screen
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
