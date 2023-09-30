@@ -50,7 +50,15 @@ public class Game {
             x--;
         } else if (key.getKeyType() == KeyType.ArrowRight) {
             x++;
+        } else if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q') {
+            try {
+                screen.close(); // Close the screen
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 }
 
