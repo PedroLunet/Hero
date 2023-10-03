@@ -3,11 +3,8 @@ import java.io.IOException;
 public class Application {
 
     public static void main(String[] args) {
-        Game game = new Game();
         try {
-            while(true) {
-                game.run();
-            }
+                new Game(40, 20).run();
         } catch (IOException e) {
             e.printStackTrace();
         }
