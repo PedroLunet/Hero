@@ -25,13 +25,13 @@ public class Arena {
     public void processKey(KeyStroke key) {
         System.out.println(key);
         if (key.getKeyType() == KeyType.ArrowUp) {
-            hero.setPosition(hero.moveUp());
+            moveHero(hero.moveUp());
         } else if (key.getKeyType() == KeyType.ArrowDown) {
-            hero.setPosition(hero.moveDown());
+            moveHero(hero.moveDown());
         } else if (key.getKeyType() == KeyType.ArrowLeft) {
-            hero.setPosition(hero.moveLeft());
+            moveHero(hero.moveLeft());
         } else if (key.getKeyType() == KeyType.ArrowRight) {
-            hero.setPosition(hero.moveRight());
+            moveHero(hero.moveRight());
         }
     }
 

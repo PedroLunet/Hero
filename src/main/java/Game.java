@@ -13,7 +13,6 @@ public class Game {
 
     private Terminal terminal;
     private Screen screen;
-    private Hero hero;
     private Arena arena;
 
     public Game(int  width, int height) {
@@ -23,18 +22,15 @@ public class Game {
             screen.setCursorPosition(null);   // we don’t need a cursor
             screen.startScreen();             // screens must be started
             screen.doResizeIfNecessary();     // resize screen if necessary
-            TerminalSize terminalSize = new TerminalSize(40, 20);
+            TerminalSize terminalSize = new TerminalSize(width, height);
             DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory().setInitialTerminalSize(terminalSize);
-            arena = new Arena(10, 10);
+            arena = new Arena(width, height);
             TextGraphics graphics = screen.newTextGraphics();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void moveHero(Position position) {
-        arena.moveHero(position);
-    }
 
     public void run() throws IOException {
         while(true){
@@ -56,11 +52,7 @@ public class Game {
     private void draw() throws IOException {
         screen.clear();
         TextGraphics graphics = screen.newTextGraphics();
-
-        // Set the background color using a hexadecimal color code
         graphics.setBackgroundColor(TextColor.Factory.fromString("#BA7262"));
-
-        // Clear the screen with the background color
         graphics.fill(' ');
         arena.draw(screen);
         screen.refresh();
