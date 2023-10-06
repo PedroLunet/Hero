@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Position {
 
     private int x;
@@ -12,5 +14,20 @@ public class Position {
     }
     public int getY() {
         return y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if(getClass() != o.getClass()) return false;
+
+        Position p = (Position) o;
+        return x == p.x && y == p.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }
