@@ -1,6 +1,4 @@
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -19,13 +17,12 @@ public class Game {
         try {
             terminal = new DefaultTerminalFactory().createTerminal();
             screen = new TerminalScreen(terminal);
-            screen.setCursorPosition(null);   // we don’t need a cursor
-            screen.startScreen();             // screens must be started
-            screen.doResizeIfNecessary();     // resize screen if necessary
+            screen.setCursorPosition(null);
+            screen.startScreen();
+            screen.doResizeIfNecessary();
             TerminalSize terminalSize = new TerminalSize(width, height);
             DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory().setInitialTerminalSize(terminalSize);
             arena = new Arena(width, height);
-            TextGraphics graphics = screen.newTextGraphics();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,9 +48,6 @@ public class Game {
 
     private void draw() throws IOException {
         screen.clear();
-        TextGraphics graphics = screen.newTextGraphics();
-        graphics.setBackgroundColor(TextColor.Factory.fromString("#BA7262"));
-        graphics.fill(' ');
         arena.draw(screen);
         screen.refresh();
     }
