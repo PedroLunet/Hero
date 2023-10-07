@@ -26,13 +26,13 @@ public class Arena {
     }
 
     public void draw(TextGraphics graphics) {
-        graphics.setBackgroundColor(TextColor.Factory.fromString("#336699")); // Set the background color
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
         graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
 
-        hero.draw(graphics); // Draw the hero
+        hero.draw(graphics);
 
         for (Wall wall : walls) {
-            wall.draw(graphics); // Draw the walls
+            wall.draw(graphics);
         }
     }
 
@@ -82,6 +82,69 @@ public class Arena {
             walls.add(new Wall(0, r));
             walls.add(new Wall(width - 1, r));
         }
+
+        int wallLength = 5;
+
+
+        int wallDistanceX = 8;
+        int wallDistanceY = 7;
+
+        for (int r = wallDistanceY; r < wallDistanceY + wallLength; r++) {
+            walls.add(new Wall(wallDistanceX, r));
+        }
+        for (int c = wallDistanceX; c < wallDistanceX + wallLength; c++) {
+            walls.add(new Wall(c, wallDistanceY));
+        }
+
+        int wallDistanceX2 = width - 20;
+        int wallDistanceY2 = height - 12;
+
+        for (int r = wallDistanceY2; r < wallDistanceY2 + wallLength; r++) {
+            walls.add(new Wall(wallDistanceX2 + wallLength - 1, r));
+        }
+        for (int c = wallDistanceX2; c < wallDistanceX2 + wallLength; c++) {
+            walls.add(new Wall(c, wallDistanceY2 + wallLength - 1));
+        }
+
+
+        int uWallDistanceX1 = 30;
+        int uWallDistanceY1 = 15;
+
+        for (int r = uWallDistanceY1; r < uWallDistanceY1 + wallLength; r++) {
+            walls.add(new Wall(uWallDistanceX1, r));
+            walls.add(new Wall(uWallDistanceX1 + wallLength - 1, r));
+        }
+        for (int c = uWallDistanceX1 + 1; c < uWallDistanceX1 + wallLength - 1; c++) {
+            walls.add(new Wall(c, uWallDistanceY1));
+        }
+
+        int vLineDistanceX = 20;
+        int vLineStartY = 5;
+        int vLineEndY = vLineStartY + 4;
+
+        for (int r = vLineStartY; r <= vLineEndY; r++) {
+            walls.add(new Wall(vLineDistanceX, r));
+        }
+
+
+        int hWallStartX = 10;
+        int hWallEndX = hWallStartX + 6;
+        int hWallDistanceY = 20;
+
+        for (int c = hWallStartX; c <= hWallEndX; c++) {
+            walls.add(new Wall(c, hWallDistanceY));
+        }
+
+        int hWallStartX2 = 40;
+        int hWallEndX2 = hWallStartX2 + 7;
+        int hWallDistanceY2 = 5;
+
+        for (int c = hWallStartX2; c <= hWallEndX2; c++) {
+            walls.add(new Wall(c, hWallDistanceY2));
+        }
+
+
+
         return walls;
     }
 }
