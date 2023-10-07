@@ -1,4 +1,5 @@
 import com.googlecode.lanterna.TextCharacter;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 
 public class Wall {
@@ -13,9 +14,9 @@ public class Wall {
         return position;
     }
 
-    public void draw(Screen screen) {
+    public void draw(TextGraphics graphics) {
         int x = position.getX();
         int y = position.getY();
-        screen.setCharacter(x, y, TextCharacter.fromCharacter('#')[0]);
+        graphics.setCharacter(x, y, TextCharacter.fromCharacter('#')[0]);
     }
 }

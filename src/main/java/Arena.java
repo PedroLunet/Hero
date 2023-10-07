@@ -1,3 +1,7 @@
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -21,10 +25,14 @@ public class Arena {
         walls = createWalls();
     }
 
-    public void draw(Screen screen) {
-        hero.draw(screen);
+    public void draw(TextGraphics graphics) {
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#336699")); // Set the background color
+        graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
+
+        hero.draw(graphics); // Draw the hero
+
         for (Wall wall : walls) {
-            wall.draw(screen);
+            wall.draw(graphics); // Draw the walls
         }
     }
 
