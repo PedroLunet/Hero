@@ -6,6 +6,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -30,7 +31,6 @@ public class Arena {
         graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
         graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
 
-        hero.draw(graphics);
 
         for (Wall wall : walls) {
             wall.draw(graphics);
@@ -39,16 +39,9 @@ public class Arena {
         for (Coin coin : coins) {
             coin.draw(graphics);
         }
-    }
-    private List<Coin> createCoins() {
-        Random random = new Random();
-        ArrayList<Coin> coins = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            coins.add(new Coin(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
-        }
-        return coins;
-    }
 
+        hero.draw(graphics);
+    }
     public void processKey(KeyStroke key) {
         System.out.println(key);
         if (key.getKeyType() == KeyType.ArrowUp) {
@@ -79,6 +72,14 @@ public class Arena {
         for (Wall wall : walls) {
             if (wall.getPosition().equals(position)) {
                 return false;
+            }
+        }
+
+        Iterator<Coin> coinIterator = coins.iterator();
+        while (coinIterator.hasNext()) {
+            Coin coin = coinIterator.next();
+            if (coin.getPosition().equals(hero.getPosition())) {
+                coinIterator.remove();
             }
         }
 
@@ -158,5 +159,35 @@ public class Arena {
 
 
         return walls;
+    }
+
+    private List<Coin> createCoins() {
+        Random random = new Random();
+        ArrayList<Coin> coins = new ArrayList<>();
+        int minDistanceBetweenCoins = 4;
+
+        while (coins.size() < 20) {
+            int x = random.nextInt(width - 2) + 1;
+            int y = random.nextInt(height - 2) + 1;
+
+            boolean isValidPosition = true;
+
+            for (Coin existingCoin : coins) {
+                int coinX = existingCoin.getPosition().getX();
+                int coinY = existingCoin.getPosition().getY();
+
+                if (Math.abs(x - coinX) < minDistanceBetweenCoins
+                        && Math.abs(y - coinY) < minDistanceBetweenCoins) {
+                    isValidPosition = false;
+                    break;
+                }
+            }
+
+            if (isValidPosition) {
+                coins.add(new Coin(x, y));
+            }
+        }
+
+        return coins;
     }
 }
