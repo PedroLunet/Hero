@@ -17,6 +17,7 @@ public class Arena {
     private Hero hero;
     private List<Wall> walls;
     private List<Coin> coins;
+    private List<Monster> monsters;
 
 
     public Arena(int width, int height) {
@@ -25,6 +26,7 @@ public class Arena {
         hero = new Hero(10, 10);
         walls = createWalls();
         coins = createCoins();
+        monsters = Monster.createMonsters(5, width, height);
     }
 
     public void draw(TextGraphics graphics) {
@@ -41,6 +43,10 @@ public class Arena {
         }
 
         hero.draw(graphics);
+
+        for (Monster monster : monsters) {
+            monster.draw(graphics);
+        }
     }
     public void processKey(KeyStroke key) {
         System.out.println(key);
@@ -190,4 +196,20 @@ public class Arena {
 
         return coins;
     }
+
+    public void moveMonsters() {
+        for (Monster monster : monsters) {
+            monster.move();
+        }
+    }
+
+    public void verifyMonsterCollisions() {
+        for (Monster monster : monsters) {
+            if (monster.getPosition().equals(hero.getPosition())) {
+                System.out.println("Game Over! Hero touched a Monster.");
+                System.exit(0);
+            }
+        }
+    }
+
 }
