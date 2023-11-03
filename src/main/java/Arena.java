@@ -26,7 +26,7 @@ public class Arena {
         hero = new Hero(10, 10);
         walls = createWalls();
         coins = createCoins();
-        monsters = Monster.createMonsters(5, width, height);
+        monsters = createMonsters();
     }
 
     public void draw(TextGraphics graphics) {
@@ -52,13 +52,104 @@ public class Arena {
         System.out.println(key);
         if (key.getKeyType() == KeyType.ArrowUp) {
             moveHero(hero.moveUp());
+            moveMonsters();
         } else if (key.getKeyType() == KeyType.ArrowDown) {
             moveHero(hero.moveDown());
+            moveMonsters();
         } else if (key.getKeyType() == KeyType.ArrowLeft) {
             moveHero(hero.moveLeft());
+            moveMonsters();
         } else if (key.getKeyType() == KeyType.ArrowRight) {
             moveHero(hero.moveRight());
+            moveMonsters();
         }
+
+    }
+
+    private void moveMonsters() {
+        for (Monster monster : monsters) {
+            Random random = new Random();
+            int randomDirection = random.nextInt(4); // 0: up, 1: down, 2: left, 3: right
+
+            Position newPosition = null;
+            switch (randomDirection) {
+                case 0:
+                    newPosition = monster.moveUp();
+                    break;
+                case 1:
+                    newPosition = monster.moveDown();
+                    break;
+                case 2:
+                    newPosition = monster.moveLeft();
+                    break;
+                case 3:
+                    newPosition = monster.moveRight();
+                    break;
+            }
+
+            if (canMonsterMove(monster, newPosition)) {
+                monster.setPosition(newPosition);
+            }
+        }
+    }
+
+    private boolean canMonsterMove(Monster monster, Position position) {
+
+        int newX = position.getX();
+        int newY = position.getY();
+
+        if (newX < 1 || newX >= width - 1 || newY < 1 || newY >= height - 1) {
+            return false;
+        }
+
+        for (Wall wall : walls) {
+            if (wall.getPosition().equals(position)) {
+                return false;
+            }
+        }
+
+        for (Coin coin : coins) {
+            if (coin.getPosition().equals(position)) {
+                return false;
+            }
+        }
+
+
+        return true;
+    }
+
+    private List<Monster> createMonsters() {
+        List<Monster> monsters = new ArrayList<>();
+
+        // Generate monsters in random positions
+
+        Random random = new Random();
+
+        for (int i = 0; i < 15; i++) {
+            int x = random.nextInt(width - 2) + 1;
+            int y = random.nextInt(height - 2) + 1;
+
+            // Make sure the monsters do not start on top of walls or the hero
+
+            boolean isValidPosition = true;
+
+            for (Wall wall : walls) {
+                if (wall.getPosition().getX() == x && wall.getPosition().getY() == y) {
+                    isValidPosition = false;
+                    break;
+                }
+            }
+
+            if (hero.getPosition().getX() == x && hero.getPosition().getY() == y) {
+                isValidPosition = false;
+            }
+
+            if (isValidPosition) {
+                monsters.add(new Monster(x, y));
+            }
+        }
+
+        return monsters;
     }
 
     public void moveHero(Position position) {
@@ -88,7 +179,6 @@ public class Arena {
                 coinIterator.remove();
             }
         }
-
         return true;
     }
 
@@ -171,6 +261,7 @@ public class Arena {
         Random random = new Random();
         ArrayList<Coin> coins = new ArrayList<>();
         int minDistanceBetweenCoins = 4;
+        int minD = 2; //Distance between coins and other elements
 
         while (coins.size() < 20) {
             int x = random.nextInt(width - 2) + 1;
@@ -178,15 +269,26 @@ public class Arena {
 
             boolean isValidPosition = true;
 
+            // Check the distance between the potential new coin and existing coins
             for (Coin existingCoin : coins) {
-                int coinX = existingCoin.getPosition().getX();
-                int coinY = existingCoin.getPosition().getY();
+                int distanceX = Math.abs(x - existingCoin.getPosition().getX());
+                int distanceY = Math.abs(y - existingCoin.getPosition().getY());
 
-                if (Math.abs(x - coinX) < minDistanceBetweenCoins
-                        && Math.abs(y - coinY) < minDistanceBetweenCoins) {
+                if (distanceX < minDistanceBetweenCoins && distanceY < minDistanceBetweenCoins) {
                     isValidPosition = false;
                     break;
                 }
+            }
+
+            for (Wall wall : walls) {
+                if (Math.abs(x - wall.getPosition().getX()) < minD && Math.abs(y - wall.getPosition().getY()) < minD) {
+                    isValidPosition = false;
+                    break;
+                }
+            }
+
+            if (Math.abs(x - hero.getPosition().getX()) < minD && Math.abs(y - hero.getPosition().getY()) < minD) {
+                isValidPosition = false;
             }
 
             if (isValidPosition) {
@@ -196,20 +298,4 @@ public class Arena {
 
         return coins;
     }
-
-    public void moveMonsters() {
-        for (Monster monster : monsters) {
-            monster.move();
-        }
-    }
-
-    public void verifyMonsterCollisions() {
-        for (Monster monster : monsters) {
-            if (monster.getPosition().equals(hero.getPosition())) {
-                System.out.println("Game Over! Hero touched a Monster.");
-                System.exit(0);
-            }
-        }
-    }
-
 }
