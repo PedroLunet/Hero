@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -19,6 +20,8 @@ public class Arena {
     private List<Coin> coins;
     private List<Monster> monsters;
     private boolean heroAlive = true;
+    private int score = 0;
+    private int totalCoins;
 
     public Arena(int width, int height) {
         this.width = width;
@@ -26,11 +29,23 @@ public class Arena {
         hero = new Hero(10, 10);
         walls = createWalls();
         coins = createCoins();
+        totalCoins = coins.size();
         monsters = createMonsters();
     }
     public void draw(TextGraphics graphics) {
         graphics.setBackgroundColor(TextColor.Factory.fromString("#E1F5B8"));
         graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
+
+        String scoreText = "COINS: " + score + "/" + totalCoins;
+        int scoreTextX = width - scoreText.length() - 2;
+
+        graphics.setForegroundColor(TextColor.ANSI.BLACK);
+        graphics.enableModifiers(SGR.BOLD);
+
+        graphics.putString(new TerminalPosition(scoreTextX, 1), scoreText);
+
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFFFF"));
+        graphics.disableModifiers(SGR.BOLD);
 
         for (Wall wall : walls) {
             wall.draw(graphics);
@@ -66,7 +81,7 @@ public class Arena {
     private void moveMonsters() {
         for (Monster monster : monsters) {
             Random random = new Random();
-            int randomDirection = random.nextInt(4); // 0: up, 1: down, 2: left, 3: right
+            int randomDirection = random.nextInt(4);
 
             Position newPosition = null;
             switch (randomDirection) {
@@ -153,6 +168,14 @@ public class Arena {
     }
 
     private void checkCollisions() {
+        Iterator<Coin> coinIterator = coins.iterator();
+        while (coinIterator.hasNext()) {
+            Coin coin = coinIterator.next();
+            if (hero.getPosition().equals(coin.getPosition())) {
+                coinIterator.remove();
+                increaseScore();
+            }
+        }
         for (Monster monster : monsters) {
             if (hero.getPosition().equals(monster.getPosition())) {
                 heroAlive = false;
@@ -160,6 +183,15 @@ public class Arena {
             }
         }
     }
+
+    private void increaseScore() {
+        score++;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
     public boolean isHeroAlive() {
         return heroAlive;
     }
@@ -267,15 +299,14 @@ public class Arena {
         Random random = new Random();
         ArrayList<Coin> coins = new ArrayList<>();
         int minDistanceBetweenCoins = 4;
-        int minD = 2; //Distance between coins and other elements
+        int minD = 2;
 
-        while (coins.size() < 20) {
+        while (coins.size() < 25) {
             int x = random.nextInt(width - 2) + 1;
             int y = random.nextInt(height - 2) + 1;
 
             boolean isValidPosition = true;
 
-            // Check the distance between the potential new coin and existing coins
             for (Coin existingCoin : coins) {
                 int distanceX = Math.abs(x - existingCoin.getPosition().getX());
                 int distanceY = Math.abs(y - existingCoin.getPosition().getY());
