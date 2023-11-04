@@ -18,7 +18,7 @@ public class Arena {
     private List<Wall> walls;
     private List<Coin> coins;
     private List<Monster> monsters;
-
+    private boolean heroAlive = true;
 
     public Arena(int width, int height) {
         this.width = width;
@@ -28,11 +28,9 @@ public class Arena {
         coins = createCoins();
         monsters = createMonsters();
     }
-
     public void draw(TextGraphics graphics) {
-        graphics.setBackgroundColor(TextColor.Factory.fromString("#FFEFDA"));
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#E1F5B8"));
         graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
-
 
         for (Wall wall : walls) {
             wall.draw(graphics);
@@ -63,7 +61,6 @@ public class Arena {
             moveHero(hero.moveRight());
             moveMonsters();
         }
-
     }
 
     private void moveMonsters() {
@@ -86,7 +83,6 @@ public class Arena {
                     newPosition = monster.moveRight();
                     break;
             }
-
             if (canMonsterMove(monster, newPosition)) {
                 monster.setPosition(newPosition);
             }
@@ -121,15 +117,12 @@ public class Arena {
     private List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
 
-        // Generate monsters in random positions
-
         Random random = new Random();
 
         for (int i = 0; i < 15; i++) {
             int x = random.nextInt(width - 2) + 1;
             int y = random.nextInt(height - 2) + 1;
 
-            // Make sure the monsters do not start on top of walls or the hero
 
             boolean isValidPosition = true;
 
@@ -155,7 +148,20 @@ public class Arena {
     public void moveHero(Position position) {
         if (canHeroMove(position)) {
             hero.setPosition(position);
+            checkCollisions();
         }
+    }
+
+    private void checkCollisions() {
+        for (Monster monster : monsters) {
+            if (hero.getPosition().equals(monster.getPosition())) {
+                heroAlive = false;
+                break;
+            }
+        }
+    }
+    public boolean isHeroAlive() {
+        return heroAlive;
     }
 
     private boolean canHeroMove(Position position) {
@@ -295,7 +301,6 @@ public class Arena {
                 coins.add(new Coin(x, y));
             }
         }
-
         return coins;
     }
 }

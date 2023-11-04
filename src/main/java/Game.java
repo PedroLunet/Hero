@@ -31,19 +31,25 @@ public class Game {
 
 
     public void run() throws IOException {
-        while(true){
-        draw();
-        KeyStroke key = screen.readInput();
-        if (key != null) {
-            if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q') {
-                screen.close();
+        while (arena.isHeroAlive()) {
+            draw();
+            KeyStroke key = screen.readInput();
+            if (key != null) {
+                if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q') {
+                    screen.close();
+                    break;
+                }
+                if (key.getKeyType() == KeyType.EOF) {
+                    break;
+                }
+                processKey(key);
             }
-            if (key.getKeyType() == KeyType.EOF) {
-                break;
-            }
-
-            processKey(key);
         }
+
+        screen.close();
+
+        if (!arena.isHeroAlive()) {
+            System.out.println("Game Over! Your Hero died!");
         }
     }
 

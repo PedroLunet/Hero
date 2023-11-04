@@ -7,15 +7,10 @@ public class Coin extends Element {
     public Coin(int x, int y) {
         super(x, y);
     }
-
-    public Position getPosition() {
-        return position;
-    }
-
     public void draw(TextGraphics graphics) {
         int x = position.getX();
         int y = position.getY();
-        graphics.setForegroundColor(TextColor.Factory.fromString("#D19B00"));
+        graphics.setForegroundColor(TextColor.Factory.fromString("#CD7B0C"));
         graphics.enableModifiers(SGR.BOLD);
         graphics.putString(new TerminalPosition(x,y), "o");
     }
